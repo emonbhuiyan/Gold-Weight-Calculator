@@ -6,23 +6,26 @@
     <title>Gold Weight Calculator</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/svgs/solid/gem.svg" type="image/svg+xml">
     <style>
         body { padding: 20px; }
         .container { max-width: 500px; }
         .table { margin-top: 20px; }
+        .btn-sm { font-size: 14px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2 class="text-center">Gold Weight Calculator</h2>
+        <h2 class="text-center"><i class="fas fa-balance-scale"></i> Gold Weight Calculator</h2>
 
         <div class="mb-3">
-            <label for="goldWeight" class="form-label">Gold Weight (grams):</label>
+            <label for="goldWeight" class="form-label"><i class="fas fa-weight-hanging"></i> Gold Weight (grams):</label>
             <input type="number" id="goldWeight" class="form-control" placeholder="Enter weight">
         </div>
 
         <div class="mb-3">
-            <label for="goldCarat" class="form-label">Gold Carat:</label>
+            <label for="goldCarat" class="form-label"><i class="fas fa-gem"></i> Gold Carat:</label>
             <select id="goldCarat" class="form-select">
                 <option value="24">24K (100%)</option>
                 <option value="22">22K (91.6%)</option>
@@ -33,15 +36,18 @@
             </select>
         </div>
 
-        <button class="btn btn-primary w-100" onclick="addGoldItem()">Add Gold</button>
+        <button class="btn btn-primary w-100" onclick="addGoldItem()">
+            <i class="fas fa-plus-circle"></i> Add Gold
+        </button>
 
-        <h4 class="mt-4">Gold Items</h4>
+        <h4 class="mt-4"><i class="fas fa-list"></i> Gold Items</h4>
         <table class="table table-bordered">
             <thead>
                 <tr>
                     <th>Weight (g)</th>
                     <th>Carat</th>
                     <th>Pure Gold (g)</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody id="goldList"></tbody>
@@ -49,9 +55,14 @@
 
         <h5>Total Pure Gold: <span id="totalPureGold">0</span> g</h5>
         <h5>Zakatable Gold (2.5%): <span id="zakatableGold">0</span> g</h5>
+
+        <button class="btn btn-danger w-100 mt-3" onclick="resetCalculator()">
+            <i class="fas fa-trash-alt"></i> Reset Calculator
+        </button>
     </div>
 
     <script>
+        let goldItems = [];
         let totalPureGold = 0;
 
         function addGoldItem() {
@@ -62,20 +73,47 @@
                 return;
             }
 
-            // Calculate pure gold
             let pureGold = (weight * carat) / 24;
-            totalPureGold += pureGold;
+            goldItems.push({ weight, carat, pureGold });
 
-            // Add to table
-            let tableRow = `<tr><td>${weight}</td><td>${carat}K</td><td>${pureGold.toFixed(2)}</td></tr>`;
-            document.getElementById("goldList").innerHTML += tableRow;
+            updateTable();
+            document.getElementById("goldWeight").value = "";
+        }
 
-            // Update totals
+        function deleteGoldItem(index) {
+            goldItems.splice(index, 1);
+            updateTable();
+        }
+
+        function updateTable() {
+            let tableBody = document.getElementById("goldList");
+            tableBody.innerHTML = "";
+            totalPureGold = 0;
+
+            goldItems.forEach((item, index) => {
+                totalPureGold += item.pureGold;
+                tableBody.innerHTML += `
+                    <tr>
+                        <td>${item.weight}</td>
+                        <td>${item.carat}K</td>
+                        <td>${item.pureGold.toFixed(2)}</td>
+                        <td>
+                            <button class="btn btn-danger btn-sm" onclick="deleteGoldItem(${index})">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
             document.getElementById("totalPureGold").innerText = totalPureGold.toFixed(2);
             document.getElementById("zakatableGold").innerText = (totalPureGold * 0.025).toFixed(2);
+        }
 
-            // Clear input fields
-            document.getElementById("goldWeight").value = "";
+        function resetCalculator() {
+            goldItems = [];
+            totalPureGold = 0;
+            updateTable();
         }
     </script>
 </body>
