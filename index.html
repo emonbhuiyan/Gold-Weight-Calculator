@@ -4,53 +4,78 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gold Weight Calculator</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <style>
-        body { background-color: #f8f9fa; }
-        .container { max-width: 500px; margin-top: 50px; }
+        body { padding: 20px; }
+        .container { max-width: 500px; }
+        .table { margin-top: 20px; }
     </style>
 </head>
 <body>
     <div class="container">
         <h2 class="text-center">Gold Weight Calculator</h2>
-        <div id="goldList"></div>
-        <button class="btn btn-primary w-100 mt-3" onclick="addGoldItem()">Add Gold Item</button>
-        <button class="btn btn-success w-100 mt-3" onclick="calculateGold()">Calculate Zakatable Gold</button>
-        <h4 class="text-center mt-3" id="result"></h4>
+
+        <div class="mb-3">
+            <label for="goldWeight" class="form-label">Gold Weight (grams):</label>
+            <input type="number" id="goldWeight" class="form-control" placeholder="Enter weight">
+        </div>
+
+        <div class="mb-3">
+            <label for="goldCarat" class="form-label">Gold Carat:</label>
+            <select id="goldCarat" class="form-select">
+                <option value="24">24K (100%)</option>
+                <option value="22">22K (91.6%)</option>
+                <option value="21">21K (87.5%)</option>
+                <option value="18">18K (75%)</option>
+                <option value="14">14K (58.3%)</option>
+                <option value="10">10K (41.7%)</option>
+            </select>
+        </div>
+
+        <button class="btn btn-primary w-100" onclick="addGoldItem()">Add Gold</button>
+
+        <h4 class="mt-4">Gold Items</h4>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Weight (g)</th>
+                    <th>Carat</th>
+                    <th>Pure Gold (g)</th>
+                </tr>
+            </thead>
+            <tbody id="goldList"></tbody>
+        </table>
+
+        <h5>Total Pure Gold: <span id="totalPureGold">0</span> g</h5>
+        <h5>Zakatable Gold (2.5%): <span id="zakatableGold">0</span> g</h5>
     </div>
 
     <script>
-        function addGoldItem() {
-            let goldList = document.getElementById('goldList');
-            let index = goldList.children.length + 1;
-            goldList.innerHTML += `
-                <div class="card p-3 mt-3">
-                    <label>Gold Weight (grams)</label>
-                    <input type="number" class="form-control goldWeight" placeholder="Enter weight">
-                    <label class="mt-2">Gold Carat</label>
-                    <select class="form-control goldCarat">
-                        <option value="24">24K</option>
-                        <option value="22">22K</option>
-                        <option value="21">21K</option>
-                        <option value="18">18K</option>
-                        <option value="14">14K</option>
-                        <option value="10">10K</option>
-                    </select>
-                </div>`;
-        }
+        let totalPureGold = 0;
 
-        function calculateGold() {
-            let weights = document.querySelectorAll('.goldWeight');
-            let carats = document.querySelectorAll('.goldCarat');
-            let totalPureGold = 0;
-            
-            weights.forEach((weight, i) => {
-                let w = parseFloat(weight.value) || 0;
-                let c = parseFloat(carats[i].value) || 24;
-                totalPureGold += (w * c / 24); // Convert to pure gold
-            });
-            
-            document.getElementById('result').innerText = `Total Zakatable Gold: ${totalPureGold.toFixed(2)} grams`;
+        function addGoldItem() {
+            let weight = parseFloat(document.getElementById("goldWeight").value);
+            let carat = parseInt(document.getElementById("goldCarat").value);
+            if (isNaN(weight) || weight <= 0) {
+                alert("Please enter a valid gold weight.");
+                return;
+            }
+
+            // Calculate pure gold
+            let pureGold = (weight * carat) / 24;
+            totalPureGold += pureGold;
+
+            // Add to table
+            let tableRow = `<tr><td>${weight}</td><td>${carat}K</td><td>${pureGold.toFixed(2)}</td></tr>`;
+            document.getElementById("goldList").innerHTML += tableRow;
+
+            // Update totals
+            document.getElementById("totalPureGold").innerText = totalPureGold.toFixed(2);
+            document.getElementById("zakatableGold").innerText = (totalPureGold * 0.025).toFixed(2);
+
+            // Clear input fields
+            document.getElementById("goldWeight").value = "";
         }
     </script>
 </body>
