@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gold Weight Calculator</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 50px; }
+        input, button { margin: 10px; padding: 10px; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <h1>Gold Weight Calculator</h1>
+    <p>Enter gold weight in grams:</p>
+    <input type="number" id="goldWeight" placeholder="Enter grams">
+    <button onclick="calculateZakat()">Calculate Zakat</button>
+    <p id="result"></p>
+
+    <script>
+        function calculateZakat() {
+            let weight = parseFloat(document.getElementById('goldWeight').value);
+            if (isNaN(weight) || weight <= 0) {
+                document.getElementById('result').innerText = "Please enter a valid weight.";
+                return;
+            }
+            let zakat = weight * 0.025; // 2.5% Zakat
+            document.getElementById('result').innerText = "Zakat Payable: " + zakat.toFixed(2) + " grams of gold.";
+        }
+    </script>
+</body>
+</html>
