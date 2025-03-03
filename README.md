@@ -12,7 +12,7 @@ A **modern, mobile-friendly Gold Weight Calculator** that helps users calculate 
 - 💎 **FontAwesome icons** for a modern look.
 
 ## 🚀 Live Demo
-🔗 **[Gold Weight Calculator](https://emonbhuiyan.github.io/gold-weight-calculator/)**
+🔗 **[Gold Weight Calculator](https://emonbhuiyan.github.io/Gold-Weight-Calculator/)**
 
 ## 📜 License
 This project is **open-source** under the MIT License.
